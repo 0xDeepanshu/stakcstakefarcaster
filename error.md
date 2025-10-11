@@ -1,8 +1,13 @@
-Type error: Type 'Uint16Array<ArrayBuffer>' can only be iterated through when using the '--downlevelIteration' flag or with a '--target' of 'es2015' or higher.
-  152 |   for (let i = 0; i < particleCount; i++) {
-  153 |     const baseIndex = i * 24;
-> 154 |     for (const index of cubeIndices) {
-      |                         ^
-  155 |       allIndices.push(baseIndex + index);
-  156 |     }
-  157 |   }
+./components/TargetCursor.tsx:48:16
+Type error: Cannot assign to 'current' because it is a read-only property.
+  46 |
+  47 |     const cursor = cursorRef.current;
+> 48 |     cornersRef.current = cursor.querySelectorAll<HTMLDivElement>('.target-cursor-corner');
+     |                ^
+  49 |
+  50 |     let activeTarget: Element | null = null;
+  51 |     let currentTargetMove: ((ev: Event) => void) | null = null;
+ ELIFECYCLE  Command failed with exit code 1.
+Cannot assign to 'current' because it is a read-only property.ts(2540)
+(property) RefObject<gsap.core.Timeline>.current: any
+The current value of the ref.
