@@ -17,6 +17,7 @@ export async function GET() {
       primaryCategory: "developer-tools",
       tags: ["monad", "farcaster", "miniapp", "template"],
       heroImageUrl: `${APP_URL}/images/EVMcd.png`,
+      buttonTitle : "🚩 Start",
     },
   };
 
