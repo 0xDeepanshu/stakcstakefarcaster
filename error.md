@@ -1,13 +1,10 @@
-./components/TargetCursor.tsx:48:16
-Type error: Cannot assign to 'current' because it is a read-only property.
-  46 |
-  47 |     const cursor = cursorRef.current;
-> 48 |     cornersRef.current = cursor.querySelectorAll<HTMLDivElement>('.target-cursor-corner');
-     |                ^
-  49 |
-  50 |     let activeTarget: Element | null = null;
-  51 |     let currentTargetMove: ((ev: Event) => void) | null = null;
+Failed to compile.
+./lib/utils.ts:1:39
+Type error: Cannot find module 'clsx' or its corresponding type declarations.
+> 1 | import { clsx, type ClassValue } from "clsx"
+    |                                       ^
+  2 | import { twMerge } from "tailwind-merge"
+  3 |
+  4 | export function cn(...inputs: ClassValue[]) {
  ELIFECYCLE  Command failed with exit code 1.
-Cannot assign to 'current' because it is a read-only property.ts(2540)
-(property) RefObject<gsap.core.Timeline>.current: any
-The current value of the ref.
+Error: Command "pnpm run build" exited with 1
