@@ -2,8 +2,8 @@ import App from '@/components/pages/app'
 import { APP_URL } from '@/lib/constants'
 import type { Metadata } from 'next'
 import FrontEnd from '@/components/pages/main'
-const frame = {
-  version: 'next',
+const miniapp = {
+  version: '1',
   imageUrl: `${APP_URL}/images/EVMcd.png`,
   button: {
     title: 'Launch Template',
@@ -25,7 +25,7 @@ export async function generateMetadata(): Promise<Metadata> {
       description: 'A Rupture Labs gaming formation',
     },
     other: {
-      'fc:frame': JSON.stringify(frame),
+      'fc:miniapp': JSON.stringify(miniapp),
     },
   }
 }
