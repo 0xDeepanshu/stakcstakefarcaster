@@ -151,8 +151,8 @@ const createCubeGeometry = (gl: any, particleCount: number, particleSpread: numb
   const allIndices: number[] = [];
   for (let i = 0; i < particleCount; i++) {
     const baseIndex = i * 24;
-    for (const index of cubeIndices) {
-      allIndices.push(baseIndex + index);
+    for (let j = 0; j < cubeIndices.length; j++) {
+      allIndices.push(baseIndex + cubeIndices[j]);
     }
   }
 
