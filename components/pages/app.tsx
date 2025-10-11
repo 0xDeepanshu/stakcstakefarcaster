@@ -6,6 +6,7 @@ import { SafeAreaContainer } from '@/components/safe-area-container'
 
 export default function Home() {
   const { context, isLoading, isSDKLoaded } = useFrame()
+  
 
   if (isLoading) {
     return (
