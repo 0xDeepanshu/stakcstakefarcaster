@@ -137,7 +137,10 @@ export default function FrontEnd() {
             <div className="flex justify-center space-x-4">
               <button
                 type="button"
-              onClick={() => actions?.addMiniApp()}
+                onClick={() => {
+                  actions?.addMiniApp();
+                  handleNo();
+                }}
                 className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition"
               >
                 Yes
