@@ -12,6 +12,8 @@ import { APP_URL } from '@/lib/constants'
 import { useMutation } from '@tanstack/react-query'
 import { IoIosNotifications } from "react-icons/io";
 import { MiniAppNotificationDetails } from "@farcaster/miniapp-core";
+import useIsMobile from '@/lib/useIsMobile';
+
 export default function FrontEnd() {
   const { context } = useFrame()
   const [showModal, setShowModal] = useState(false);
@@ -21,6 +23,7 @@ export default function FrontEnd() {
     useState<MiniAppNotificationDetails | null>(null);
   const [showUnityGame, setShowUnityGame] = useState(false);
 
+  const isMobile = useIsMobile(768);
   const fid = context?.user?.fid;
 
   useEffect(() => {
@@ -104,7 +107,7 @@ export default function FrontEnd() {
         </div>
       ) : null}
       
-      <TargetCursor />
+      {!isMobile && <TargetCursor />}
       <Particles
         className="absolute inset-0 z-0"
         particleCount={500}
