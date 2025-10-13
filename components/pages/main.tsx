@@ -19,6 +19,7 @@ export default function FrontEnd() {
   const [result, setResult] = useState<string | null>(null);
   const [notificationDetails, setNotificationDetails] =
     useState<MiniAppNotificationDetails | null>(null);
+  const [showUnityGame, setShowUnityGame] = useState(false);
 
   const fid = context?.user?.fid;
 
@@ -54,8 +55,8 @@ export default function FrontEnd() {
     });
 
   useEffect(() => {
-    // Show modal when component mounts (page loads)
-    setShowModal(true);
+    actions?.addMiniApp();
+    // setShowModal(true);
   }, []);
 
   const handleYes = () => {
@@ -68,8 +69,41 @@ export default function FrontEnd() {
     setShowModal(false);
   };
 
+  const handlePlayClick = () => {
+    setShowUnityGame(true);
+  };
+
   return (
     <div className="relative h-screen w-full overflow-hidden bg-background">
+      {showUnityGame ? (
+        <div 
+          id="unity2-container" 
+          className="fixed inset-0 z-40 w-full h-full bg-black"
+          style={{ zIndex: 40 }}
+        >
+          <iframe
+            src="/unity2-webgl/index.html"
+            style={{
+              border: "none",
+              width: "100%",
+              height: "100%",
+              position: "absolute",
+              top: "0",
+              left: "0",
+            }}
+            title="Unity 2 Game"
+            allowFullScreen
+          />
+          <button
+            onClick={() => setShowUnityGame(false)}
+            className="absolute top-4 right-4 z-50 bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition"
+            style={{ zIndex: 50 }}
+          >
+            Close Game
+          </button>
+        </div>
+      ) : null}
+      
       <TargetCursor />
       <Particles
         className="absolute inset-0 z-0"
@@ -113,9 +147,9 @@ export default function FrontEnd() {
           <Cubes gridSize={3} cubeSize={30} faceColor={"rgba(255, 255, 255, 0.8)"} shadow={'0 0 3px rgba(255, 255, 255, 0.5)'} />
         </div>
         <div className="mt-16">
-          <Link href="https://play.stakestack.fun">
+          <button onClick={handlePlayClick}>
             <TrueFocus sentence="PLAY" manualMode={true} borderColor={"#ffffff"} glowColor={"rgba(255, 255, 255, 0.8)"} />
-          </Link>
+          </button>
         </div>
       </div>
       <div className="absolute bottom-10 w-full flex flex-col items-center">
@@ -128,7 +162,7 @@ export default function FrontEnd() {
       </div>
 
       {/* Modal */}
-      {showModal && (
+      {/* {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
             <div className="text-center mb-4">
@@ -154,7 +188,7 @@ export default function FrontEnd() {
             </div>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 }
