@@ -7,117 +7,148 @@
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
     <style>
-      body {
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-        background-color: #000;
-      }
-      #unity-container {
-        width: 100%;
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        overflow: hidden;
-      }
-      #unity-canvas {
-        width: 100%;
-        height: 100%;
-        max-width: 500px;
-        max-height: 900px;
-        object-fit: contain;
-      }
-      /* Remove Unity logo or side bars */
-      .unity-mobile::after,
-      .unity-desktop::after,
-      .unity-logo {
-        display: none !important;
-        visibility: hidden !important;
-      }
-      @media (max-width: 500px) {
-        #unity-canvas {
-          max-width: 100%;
-          max-height: 100vh;
-        }
-      }
-    </style>
+  body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #000;
+  }
+  #unity-container {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+  }
+  #unity-canvas {
+    width: 100%;
+    height: 100%;
+    max-width: 500px;
+    max-height: 900px;
+    object-fit: contain;
+  }
+
+  /* Hide Unity's default loading UI */
+  #unity-loading-bar,
+  #unity-logo,
+  .unity-mobile::after,
+  .unity-desktop::after {
+    display: none !important;
+    visibility: hidden !important;
+  }
+
+  /* Custom loading image */
+  #custom-loading-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000 url('_base-logo.svg') no-repeat center center;
+    background-size: contain;
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  @media (max-width: 500px) {
+    #unity-canvas {
+      max-width: 100%;
+      max-height: 100vh;
+    }
+  }
+</style>
   </head>
   <body>
-    <div id="unity-container" class="unity-desktop">
-      <canvas id="unity-canvas" width="500" height="900" tabindex="-1"></canvas>
-      <div id="unity-loading-bar">
-        <div id="unity-logo"></div>
-        <div id="unity-progress-bar-empty">
-          <div id="unity-progress-bar-full"></div>
-        </div>
-      </div>
-      <div id="unity-warning"></div>
-      <div id="unity-footer" style="display:none;"></div>
+  <div id="unity-container" class="unity-desktop">
+    <canvas id="unity-canvas" width="500" height="900" tabindex="-1"></canvas>
+    
+    <!-- Custom loading screen -->
+    <div id="custom-loading-screen">
+      <!-- Optional: add a spinner or text if needed -->
     </div>
 
-    <script>
-      var canvas = document.querySelector("#unity-canvas");
+    <!-- Keep Unity's elements (they'll be hidden via CSS) -->
+    <div id="unity-loading-bar">
+      <div id="unity-logo"></div>
+      <div id="unity-progress-bar-empty">
+        <div id="unity-progress-bar-full"></div>
+      </div>
+    </div>
+    <div id="unity-warning"></div>
+    <div id="unity-footer" style="display:none;"></div>
+  </div>
 
-      function unityShowBanner(msg, type) {
-        var warningBanner = document.querySelector("#unity-warning");
-        function updateBannerVisibility() {
-          warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
-        }
-        var div = document.createElement('div');
-        div.innerHTML = msg;
-        warningBanner.appendChild(div);
-        if (type == 'error') div.style = 'background: red; padding: 10px;';
-        else {
-          if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
-          setTimeout(function() {
-            warningBanner.removeChild(div);
-            updateBannerVisibility();
-          }, 5000);
-        }
-        updateBannerVisibility();
+  <script>
+    var canvas = document.querySelector("#unity-canvas");
+    var customLoadingScreen = document.getElementById("custom-loading-screen");
+
+    function unityShowBanner(msg, type) {
+      var warningBanner = document.querySelector("#unity-warning");
+      function updateBannerVisibility() {
+        warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
       }
-
-      var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/Build.loader.js";
-      var config = {
-        arguments: [],
-        dataUrl: buildUrl + "/Build.data",
-        frameworkUrl: buildUrl + "/Build.framework.js",
-        codeUrl: buildUrl + "/Build.wasm",
-        streamingAssetsUrl: "StreamingAssets",
-        companyName: "RuptureLabs",
-        productName: "StakeStack",
-        productVersion: "0.1",
-        showBanner: unityShowBanner,
-      };
-
-      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-        var meta = document.createElement('meta');
-        meta.name = 'viewport';
-        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
-        document.getElementsByTagName('head')[0].appendChild(meta);
-        document.querySelector("#unity-container").className = "unity-mobile";
-        canvas.className = "unity-mobile";
-      } else {
-        canvas.style.width = "500px";
-        canvas.style.height = "900px";
+      var div = document.createElement('div');
+      div.innerHTML = msg;
+      warningBanner.appendChild(div);
+      if (type == 'error') div.style = 'background: red; padding: 10px;';
+      else {
+        if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
+        setTimeout(function() {
+          warningBanner.removeChild(div);
+          updateBannerVisibility();
+        }, 5000);
       }
+      updateBannerVisibility();
+    }
 
-      document.querySelector("#unity-loading-bar").style.display = "block";
+    var buildUrl = "Build";
+    var loaderUrl = buildUrl + "/Build.loader.js";
+    var config = {
+      arguments: [],
+      dataUrl: buildUrl + "/Build.data",
+      frameworkUrl: buildUrl + "/Build.framework.js",
+      codeUrl: buildUrl + "/Build.wasm",
+      streamingAssetsUrl: "StreamingAssets",
+      companyName: "RuptureLabs",
+      productName: "StakeStack",
+      productVersion: "0.1",
+      showBanner: unityShowBanner,
+    };
 
-      var script = document.createElement("script");
-      script.src = loaderUrl;
-      script.onload = () => {
-        createUnityInstance(canvas, config, (progress) => {
-          document.querySelector("#unity-progress-bar-full").style.width = 100 * progress + "%";
-        }).then((unityInstance) => {
-          document.querySelector("#unity-loading-bar").style.display = "none";
-        }).catch((message) => {
-          alert(message);
-        });
-      };
-      document.body.appendChild(script);
-    </script>
-  </body>
+    if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+      var meta = document.createElement('meta');
+      meta.name = 'viewport';
+      meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+      document.getElementsByTagName('head')[0].appendChild(meta);
+      document.querySelector("#unity-container").className = "unity-mobile";
+      canvas.className = "unity-mobile";
+    } else {
+      canvas.style.width = "500px";
+      canvas.style.height = "900px";
+    }
+
+    // Show custom loader immediately
+    customLoadingScreen.style.display = "flex";
+
+    var script = document.createElement("script");
+    script.src = loaderUrl;
+    script.onload = () => {
+      createUnityInstance(canvas, config, (progress) => {
+        // Optional: update progress if you want a custom progress bar later
+        // For now, we just keep the static image
+      }).then((unityInstance) => {
+        // Hide custom loading screen when Unity is ready
+        customLoadingScreen.style.display = "none";
+      }).catch((message) => {
+        alert(message);
+        customLoadingScreen.style.display = "none"; // hide on error too
+      });
+    };
+    document.body.appendChild(script);
+  </script>
+</body>
 </html>
