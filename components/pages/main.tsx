@@ -99,10 +99,10 @@ export default function FrontEnd() {
           />
           <button
             onClick={() => setShowUnityGame(false)}
-            className="absolute top-4 right-4 z-50 bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition"
+            className="absolute top-4 right-4 z-50  text-white p-2 rounded-full hover:bg-red-600 transition"
             style={{ zIndex: 50 }}
           >
-            Close Game
+            X
           </button>
         </div>
       ) : null}
