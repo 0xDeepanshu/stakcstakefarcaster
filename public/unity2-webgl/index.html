@@ -7,174 +7,186 @@
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
     <style>
-  body {
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background-color: #000;
-    width: 100%;
-    height: 100vh;
-    max-width: 100vw;
-    max-height: 100vh;
-  }
-  #unity-container {
-    width: 100%;
-    height: 100vh;
-    max-width: 100%;
-    max-height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    position: relative;
-  }
-  #unity-canvas {
-    width: 100%;
-    height: 100%;
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-  }
+      body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background-color: #000;
+      }
 
-  /* Hide Unity's default loading UI */
-  #unity-loading-bar,
-  #unity-logo,
-  .unity-mobile::after,
-  .unity-desktop::after {
-    display: none !important;
-    visibility: hidden !important;
-  }
+      #unity-container {
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        position: relative;
+      }
 
-  /* Custom loading image */
-  #custom-loading-screen {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: #000 url('_base-logo.svg') no-repeat center center;
-    background-size: contain;
-    z-index: 9999;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+      #unity-canvas {
+        width: 100%;
+        height: 100%;
+        max-width: 500px;
+        max-height: 900px;
+        object-fit: contain;
+      }
 
-  @media (max-width: 500px) {
-    #unity-canvas {
-      max-width: 100%;
-      max-height: 100vh;
-    }
-  }
+      /* Hide Unity logo and extra UI */
+      #unity-logo,
+      .unity-mobile::after,
+      .unity-desktop::after,
+      .unity-logo {
+        display: none !important;
+        visibility: hidden !important;
+      }
 
-  /* Additional mobile-specific constraints */
-  @media screen and (max-device-width: 500px) and (orientation: portrait) {
-    #unity-canvas {
-      width: 100%;
-      height: 100%;
-      max-width: 100%;
-      max-height: 100%;
-    }
-  }
+      /* Custom loading screen */
+      #custom-loading-screen {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -70%);
+        width: 200px;
+        height: 200px;
+        background: url('Base_lockup_white.png') no-repeat center center;
+        background-size: contain;
+        z-index: 10000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
 
-  @media screen and (max-device-width: 800px) and (orientation: landscape) {
-    #unity-canvas {
-      width: 100%;
-      height: 100%;
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: contain;
-    }
-  }
-</style>
+      /* Loading bar */
+      #unity-loading-bar {
+        position: absolute;
+        bottom: 25%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 40%;
+        height: 20px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 10px;
+        overflow: hidden;
+        z-index: 9999;
+      }
+
+      #unity-progress-bar-empty {
+        width: 100%;
+        height: 100%;
+      }
+
+      #unity-progress-bar-full {
+        height: 100%;
+        width: 0%;
+        background: #0000ff;
+        transition: width 0.3s ease;
+      }
+
+      @media (max-width: 500px) {
+        #unity-canvas {
+          max-width: 100%;
+          max-height: 100vh;
+        }
+        #unity-loading-bar {
+          width: 70%;
+        }
+      }
+    </style>
   </head>
+
   <body>
-  <div id="unity-container" class="unity-desktop">
-    <canvas id="unity-canvas" width="500" height="900" tabindex="-1"></canvas>
-    
-    <!-- Custom loading screen -->
-    <div id="custom-loading-screen">
-      <!-- Optional: add a spinner or text if needed -->
-    </div>
+    <div id="unity-container" class="unity-desktop">
+      <canvas id="unity-canvas" width="500" height="900" tabindex="-1"></canvas>
 
-    <!-- Keep Unity's elements (they'll be hidden via CSS) -->
-    <div id="unity-loading-bar">
-      <div id="unity-logo"></div>
-      <div id="unity-progress-bar-empty">
-        <div id="unity-progress-bar-full"></div>
+      <!-- Custom loading screen -->
+      <div id="custom-loading-screen"></div>
+
+      <!-- Unity loading bar -->
+      <div id="unity-loading-bar">
+        <div id="unity-progress-bar-empty">
+          <div id="unity-progress-bar-full"></div>
+        </div>
       </div>
+
+      <div id="unity-warning"></div>
+      <div id="unity-footer" style="display:none;"></div>
     </div>
-    <div id="unity-warning"></div>
-    <div id="unity-footer" style="display:none;"></div>
-  </div>
 
-  <script>
-    var canvas = document.querySelector("#unity-canvas");
-    var customLoadingScreen = document.getElementById("custom-loading-screen");
+    <script>
+      var canvas = document.querySelector("#unity-canvas");
+      var loadingScreen = document.getElementById("custom-loading-screen");
+      var progressBarFull = document.getElementById("unity-progress-bar-full");
 
-    function unityShowBanner(msg, type) {
-      var warningBanner = document.querySelector("#unity-warning");
-      function updateBannerVisibility() {
-        warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
+      function unityShowBanner(msg, type) {
+        var warningBanner = document.querySelector("#unity-warning");
+        function updateBannerVisibility() {
+          warningBanner.style.display = warningBanner.children.length ? "block" : "none";
+        }
+        var div = document.createElement("div");
+        div.innerHTML = msg;
+        warningBanner.appendChild(div);
+        if (type == "error") div.style = "background: red; padding: 10px;";
+        else {
+          if (type == "warning") div.style = "background: yellow; padding: 10px;";
+          setTimeout(function () {
+            warningBanner.removeChild(div);
+            updateBannerVisibility();
+          }, 5000);
+        }
+        updateBannerVisibility();
       }
-      var div = document.createElement('div');
-      div.innerHTML = msg;
-      warningBanner.appendChild(div);
-      if (type == 'error') div.style = 'background: red; padding: 10px;';
-      else {
-        if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
-        setTimeout(function() {
-          warningBanner.removeChild(div);
-          updateBannerVisibility();
-        }, 5000);
+
+      var buildUrl = "Build";
+      var loaderUrl = buildUrl + "/Build.loader.js";
+      var config = {
+        arguments: [],
+        dataUrl: buildUrl + "/Build.data",
+        frameworkUrl: buildUrl + "/Build.framework.js",
+        codeUrl: buildUrl + "/Build.wasm",
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "RuptureLabs",
+        productName: "StakeStack",
+        productVersion: "0.1",
+        showBanner: unityShowBanner,
+      };
+
+      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        var meta = document.createElement("meta");
+        meta.name = "viewport";
+        meta.content =
+          "width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes";
+        document.getElementsByTagName("head")[0].appendChild(meta);
+        document.querySelector("#unity-container").className = "unity-mobile";
+        canvas.className = "unity-mobile";
+      } else {
+        canvas.style.width = "500px";
+        canvas.style.height = "900px";
       }
-      updateBannerVisibility();
-    }
 
-    var buildUrl = "Build";
-    var loaderUrl = buildUrl + "/Build.loader.js";
-    var config = {
-      arguments: [],
-      dataUrl: buildUrl + "/Build.data",
-      frameworkUrl: buildUrl + "/Build.framework.js",
-      codeUrl: buildUrl + "/Build.wasm",
-      streamingAssetsUrl: "StreamingAssets",
-      companyName: "RuptureLabs",
-      productName: "StakeStack",
-      productVersion: "0.1",
-      showBanner: unityShowBanner,
-    };
+      document.querySelector("#unity-loading-bar").style.display = "block";
 
-    if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-      var meta = document.createElement('meta');
-      meta.name = 'viewport';
-      meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
-      document.getElementsByTagName('head')[0].appendChild(meta);
-      document.querySelector("#unity-container").className = "unity-mobile";
-      canvas.className = "unity-mobile";
-    } else {
-      canvas.style.width = "500px";
-      canvas.style.height = "900px";
-    }
+      var script = document.createElement("script");
+      script.src = loaderUrl;
+      script.onload = () => {
+        createUnityInstance(canvas, config, (progress) => {
+          progressBarFull.style.width = 100 * progress + "%";
 
-    // Show custom loader immediately
-    customLoadingScreen.style.display = "flex";
-
-    var script = document.createElement("script");
-    script.src = loaderUrl;
-    script.onload = () => {
-      createUnityInstance(canvas, config, (progress) => {
-        // Optional: update progress if you want a custom progress bar later
-        // For now, we just keep the static image
-      }).then((unityInstance) => {
-        // Hide custom loading screen when Unity is ready
-        customLoadingScreen.style.display = "none";
-      }).catch((message) => {
-        alert(message);
-        customLoadingScreen.style.display = "none"; // hide on error too
-      });
-    };
-    document.body.appendChild(script);
-  </script>
-</body>
+          // Hide custom loading screen when fully loaded
+          if (progress === 1) {
+            setTimeout(() => {
+              loadingScreen.style.display = "none";
+            }, 0);
+          }
+        })
+          .then((unityInstance) => {
+            document.querySelector("#unity-loading-bar").style.display = "none";
+          })
+          .catch((message) => {
+            alert(message);
+          });
+      };
+      document.body.appendChild(script);
+    </script>
+  </body>
 </html>
