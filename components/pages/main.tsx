@@ -114,9 +114,9 @@ export default function FrontEnd() {
         speed={0.8}
         particleColors={["#ffffff"]}
       />
-      <div className="absolute top-0 bg-white text-black h-16 w-full flex flex-row justify-between items-center pl-4 text-lg font-bold">
+      <div className="absolute top-0 bg-black text-white h-16 w-full flex flex-row justify-between items-center pl-4 text-lg font-bold">
         <div className="flex items-center justify-center gap-4">
-          Rupture Labs <button onClick={() => sendNotification()}><IoIosNotifications  /></button>
+          Rupture Labs 
         </div>
         <div className="flex flex-row space-x-2 justify-end items-center">
         {context?.user ? (
