@@ -2,7 +2,7 @@ import React from 'react';
 
 const SocialIcons = () => {
   return (
-    <div className="flex flex-col space-y-4">
+    <div className="flex flex-row items-centers justify-center ">
       {/* X Icon */}
       <a 
         href="https://x.com/rupturelabs" 

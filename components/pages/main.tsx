@@ -155,9 +155,7 @@ export default function FrontEnd() {
           </button>
         </div>
       </div>
-      <div className="absolute bottom-10 w-full flex flex-col items-center">
-        <TrueFocus sentence="Stack. Stake. Dominate." manualMode={true} borderColor={"#ffffff"} glowColor={"rgba(255, 255, 255, 0.8)"} fontSize="1.5rem" />
-      </div>
+      
       
       {/* Social Icons in bottom right */}
       <div className="absolute bottom-6 right-6 z-10">
